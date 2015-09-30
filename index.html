@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Ralph's Recurse Game</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas {
+		background: #FFF;
+		display: block;
+    		margin: auto;
+		border:1px;
+		border-color:#000000;
+		border-style:dotted;
+		/*ddsd*/
+		}
+    </style>
+</head>
+<body>
+
+Here is my game:
+<canvas id="canvas" width="800" height="600"></canvas>
+<div style="display:none;">
+  <img id="blk-A" src="http://www.theledguru.com/moi/cc1/img/blk-A.png">
+  <img id="blk-B" src="http://www.theledguru.com/moi/cc1/img/blk-B.png">
+  <img id="blk-C" src="http://www.theledguru.com/moi/cc1/img/blk-C.png">
+  <img id="blk-D" src="http://www.theledguru.com/moi/cc1/img/blk-D.png">
+</div>
+
+<script>
+
+	//  INITIALISATION STUFF  //
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext("2d");
+	var img_A = document.getElementById('blk-A');
+	var img_B = document.getElementById('blk-B');
+	var img_C = document.getElementById('blk-C');
+	var img_D = document.getElementById('blk-D');
+
+	var cPX = 40;	
+	var max_X = 20;
+	var max_Y = 15;
+
+	var pl1 = { x: parseInt(max_X/2), y: parseInt(max_Y/2) };
+
+	//create an initialised array of cells:
+	var cells = [];
+	for(x=0; x<max_X; x++) {
+	    cells[x] = [];
+		for(y=0; y<max_Y; y++) {
+
+		var Q = 100.0 * Math.random();
+		var ctype;
+
+		if (Q<3.5)	{ctype=2;}
+		else if (Q<35.0){ctype=3;}
+		else		{ctype=0;}
+		
+		cells[x][y] = ctype;
+	    }
+	}
+		cells[pl1.x][pl1.y] = 1;
+
+	document.addEventListener("keydown", keyDownHandler, false);
+	document.addEventListener("keyup", keyUpHandler, false);
+
+	function keyDownHandler(e) {
+	    if(e.keyCode == 39) {
+		rightPressed = true;
+	    }
+	    else if(e.keyCode == 37) {
+		leftPressed = true;
+	    }
+	    else if(e.keyCode == 38) {
+		upPressed = true;
+	    }
+	    else if(e.keyCode == 40) {
+		downPressed = true;
+	    }
+	}
+	function keyUpHandler(e) {
+	    if(e.keyCode == 39) {
+		rightPressed = false;
+	    }
+	    else if(e.keyCode == 37) {
+		leftPressed = false;
+	    }
+	    else if(e.keyCode == 38) {
+		upPressed = true;
+	    }
+	    else if(e.keyCode == 40) {
+		downPressed = true;
+	    }
+	}
+
+
+	function drawCells() {
+
+		for(x=0; x<max_X; x++) {
+			for(y=0; y<max_Y; y++) {
+				var myimg=null;
+				if(cells[x][y] == 1){myimg = img_A;}
+				if(cells[x][y] == 2){myimg = img_B;}
+				if(cells[x][y] == 3){myimg = img_C;}
+				if(cells[x][y] == 4){myimg = img_D;}
+
+			if(myimg){ctx.drawImage(myimg, cPX*x, cPX*y);}
+
+			}
+		}
+	}
+
+	//  LOOPED STUFF  //	
+
+	var count=3;
+
+	//the function generates a frame
+	function draw() {
+	    ctx.clearRect(0, 0, canvas.width, canvas.height);
+	    drawCells();
+	
+		
+		if(rightPressed){count++;cells[count][4]=4;}
+		if(downPressed){count--;cells[count][3]=2;}
+
+	   // requestAnimationFrame(draw);
+	}
+
+	setInterval(draw, 10);
+	//draw();
+</script>
+
+</body>
+</html>
