@@ -27,6 +27,8 @@ Here is my game:
   <img id="blk-D" src="http://www.theledguru.com/moi/cc1/img/blk-D.png">
 </div>
 
+<div id="debug">Debug Text:</div>
+
 <script>
 
 	//  INITIALISATION STUFF  //
@@ -41,7 +43,13 @@ Here is my game:
 	var max_X = 20;
 	var max_Y = 15;
 
-	var pl1 = { x: parseInt(max_X/2), y: parseInt(max_Y/2) };
+	var debugtext = document.getElementById("debug");
+
+	var playerX = parseInt(max_X/2);
+	var playerY = parseInt(max_Y/2);
+
+	var player_speed = 10;// how many frames per move of the player
+	var player_speed_countdown=0;
 
 	//create an initialised array of cells:
 	var cells = [];
@@ -59,10 +67,14 @@ Here is my game:
 		cells[x][y] = ctype;
 	    }
 	}
-		cells[pl1.x][pl1.y] = 1;
+		cells[playerX][playerY] = 1;
 
 	document.addEventListener("keydown", keyDownHandler, false);
 	document.addEventListener("keyup", keyUpHandler, false);
+	rightPressed = false;
+	leftPressed = false;
+	upPressed = false;
+	downPressed = false;
 
 	function keyDownHandler(e) {
 	    if(e.keyCode == 39) {
@@ -86,10 +98,10 @@ Here is my game:
 		leftPressed = false;
 	    }
 	    else if(e.keyCode == 38) {
-		upPressed = true;
+		upPressed = false;
 	    }
 	    else if(e.keyCode == 40) {
-		downPressed = true;
+		downPressed = false;
 	    }
 	}
 
@@ -118,10 +130,80 @@ Here is my game:
 	function draw() {
 	    ctx.clearRect(0, 0, canvas.width, canvas.height);
 	    drawCells();
+		if(player_speed_countdown){player_speed_countdown--;}
 	
-		
-		if(rightPressed){count++;cells[count][4]=4;}
-		if(downPressed){count--;cells[count][3]=2;}
+	//the logic below must make transformaions to the visual array to implement the next 		frame
+
+	//keystroke handling
+	if((upPressed || downPressed || leftPressed || rightPressed) && (player_speed_countdown==0))
+		{
+		var playerX_next = playerX;
+		var playerY_next = playerY;
+		player_speed_countdown = player_speed;
+		//player moves to this position
+		if(upPressed && playerY>0){playerY_next--;}
+		if(downPressed && playerY<max_Y){playerY_next++;}
+		if(leftPressed && playerX>0){playerX_next--;}
+		if(rightPressed && playerX<max_X){playerX_next++;}
+
+
+debugtext.innerHTML="player coords";
+debugtext.innerHTML+=String(playerX);
+debugtext.innerHTML+=",";
+debugtext.innerHTML+=String(playerY);
+debugtext.innerHTML+="target val:";
+debugtext.innerHTML+=String(cells[playerX][playerY]);
+
+debugtext.innerHTML+="<br>";
+debugtext.innerHTML+="target coords";
+debugtext.innerHTML+=String(playerX_next);
+debugtext.innerHTML+=",";
+debugtext.innerHTML+=String(playerY_next);
+debugtext.innerHTML+="target val:";
+debugtext.innerHTML+=String(cells[playerX_next][playerY_next]);
+
+
+		if(cells[playerX_next][playerY_next]==0)//simply moving into empty space
+			{
+			cells[playerX_next][playerY_next]=1;
+			cells[playerX][playerY]=0;
+			playerX=playerX_next;
+			playerY=playerY_next;
+			}
+		}
+
+		if(cells[playerX_next][playerY_next]==3)// moving into a ball...
+			{
+				//determine if a shuffle in the desired direction can happen...
+				//is there a blank at the end of a series of balls
+				eosX = playerX_next;
+				eosY = playerY_next;
+
+				while(cells[eosX][eosY]==3){
+					if(upPressed){eosY--;}
+					if(downPressed){eosY++;}
+					if(leftPressed){eosX--;}
+					if(rightPressed){eosX++;}
+					if(eosY<0)     {break;}
+					if(eosY>=max_Y){break;}
+					if(eosX<0)     {break;}
+					if(eosX>=max_X){break;}
+
+				}
+
+				if(cells[eosX][eosY]==0){
+					cells[eosX][eosY]=3;
+					cells[playerX_next][playerY_next]=1;
+					cells[playerX][playerY]=0;
+					playerX=playerX_next;
+					playerY=playerY_next;
+				}
+
+
+			}
+
+
+
 
 	   // requestAnimationFrame(draw);
 	}
