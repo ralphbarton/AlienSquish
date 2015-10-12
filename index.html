@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<b!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -21,196 +21,19 @@
 Here is my game:
 <canvas id="canvas" width="800" height="600"></canvas>
 <div style="display:none;">
-  <img id="blk-A" src="http://www.theledguru.com/moi/cc1/img/blk-A.png">
-  <img id="blk-B" src="http://www.theledguru.com/moi/cc1/img/blk-B.png">
-  <img id="blk-C" src="http://www.theledguru.com/moi/cc1/img/blk-C.png">
-  <img id="blk-D" src="http://www.theledguru.com/moi/cc1/img/blk-D.png">
+  <img id="blk-A" src="http://www.theledguru.com/moi/ProjectsRC/01-AlienSquish/img/blk-A.png">
+  <img id="blk-B" src="http://www.theledguru.com/moi/ProjectsRC/01-AlienSquish/img/blk-B.png">
+  <img id="blk-C" src="http://www.theledguru.com/moi/ProjectsRC/01-AlienSquish/img/blk-C.png">
+  <img id="blk-D" src="http://www.theledguru.com/moi/ProjectsRC/01-AlienSquish/img/blk-D.png">
 </div>
 
+<div id="stats">Welcome to Alien Squish</div>
 <div id="debug">Debug Text:</div>
 
-<script>
+<script></script>
 
-	//  INITIALISATION STUFF  //
-	var canvas = document.getElementById("canvas");
-	var ctx = canvas.getContext("2d");
-	var img_A = document.getElementById('blk-A');
-	var img_B = document.getElementById('blk-B');
-	var img_C = document.getElementById('blk-C');
-	var img_D = document.getElementById('blk-D');
-
-	var cPX = 40;	
-	var max_X = 20;
-	var max_Y = 15;
-
-	var debugtext = document.getElementById("debug");
-
-	var playerX = parseInt(max_X/2);
-	var playerY = parseInt(max_Y/2);
-
-	var player_speed = 10;// how many frames per move of the player
-	var player_speed_countdown=0;
-
-	//create an initialised array of cells:
-	var cells = [];
-	for(x=0; x<max_X; x++) {
-	    cells[x] = [];
-		for(y=0; y<max_Y; y++) {
-
-		var Q = 100.0 * Math.random();
-		var ctype;
-
-		if (Q<3.5)	{ctype=2;}
-		else if (Q<35.0){ctype=3;}
-		else		{ctype=0;}
-		
-		cells[x][y] = ctype;
-	    }
-	}
-		cells[playerX][playerY] = 1;
-
-	document.addEventListener("keydown", keyDownHandler, false);
-	document.addEventListener("keyup", keyUpHandler, false);
-	rightPressed = false;
-	leftPressed = false;
-	upPressed = false;
-	downPressed = false;
-
-	function keyDownHandler(e) {
-	    if(e.keyCode == 39) {
-		rightPressed = true;
-	    }
-	    else if(e.keyCode == 37) {
-		leftPressed = true;
-	    }
-	    else if(e.keyCode == 38) {
-		upPressed = true;
-	    }
-	    else if(e.keyCode == 40) {
-		downPressed = true;
-	    }
-	}
-	function keyUpHandler(e) {
-	    if(e.keyCode == 39) {
-		rightPressed = false;
-	    }
-	    else if(e.keyCode == 37) {
-		leftPressed = false;
-	    }
-	    else if(e.keyCode == 38) {
-		upPressed = false;
-	    }
-	    else if(e.keyCode == 40) {
-		downPressed = false;
-	    }
-	}
-
-
-	function drawCells() {
-
-		for(x=0; x<max_X; x++) {
-			for(y=0; y<max_Y; y++) {
-				var myimg=null;
-				if(cells[x][y] == 1){myimg = img_A;}
-				if(cells[x][y] == 2){myimg = img_B;}
-				if(cells[x][y] == 3){myimg = img_C;}
-				if(cells[x][y] == 4){myimg = img_D;}
-
-			if(myimg){ctx.drawImage(myimg, cPX*x, cPX*y);}
-
-			}
-		}
-	}
-
-	//  LOOPED STUFF  //	
-
-	var count=3;
-
-	//the function generates a frame
-	function draw() {
-	    ctx.clearRect(0, 0, canvas.width, canvas.height);
-	    drawCells();
-		if(player_speed_countdown){player_speed_countdown--;}
-	
-	//the logic below must make transformaions to the visual array to implement the next 		frame
-
-	//keystroke handling
-	if((upPressed || downPressed || leftPressed || rightPressed) && (player_speed_countdown==0))
-		{
-		var playerX_next = playerX;
-		var playerY_next = playerY;
-		player_speed_countdown = player_speed;
-		//player moves to this position
-		if(upPressed && playerY>0){playerY_next--;}
-		if(downPressed && playerY<max_Y){playerY_next++;}
-		if(leftPressed && playerX>0){playerX_next--;}
-		if(rightPressed && playerX<max_X){playerX_next++;}
-
-
-debugtext.innerHTML="player coords";
-debugtext.innerHTML+=String(playerX);
-debugtext.innerHTML+=",";
-debugtext.innerHTML+=String(playerY);
-debugtext.innerHTML+="target val:";
-debugtext.innerHTML+=String(cells[playerX][playerY]);
-
-debugtext.innerHTML+="<br>";
-debugtext.innerHTML+="target coords";
-debugtext.innerHTML+=String(playerX_next);
-debugtext.innerHTML+=",";
-debugtext.innerHTML+=String(playerY_next);
-debugtext.innerHTML+="target val:";
-debugtext.innerHTML+=String(cells[playerX_next][playerY_next]);
-
-
-		if(cells[playerX_next][playerY_next]==0)//simply moving into empty space
-			{
-			cells[playerX_next][playerY_next]=1;
-			cells[playerX][playerY]=0;
-			playerX=playerX_next;
-			playerY=playerY_next;
-			}
-		}
-
-		if(cells[playerX_next][playerY_next]==3)// moving into a ball...
-			{
-				//determine if a shuffle in the desired direction can happen...
-				//is there a blank at the end of a series of balls
-				eosX = playerX_next;
-				eosY = playerY_next;
-
-				while(cells[eosX][eosY]==3){
-					if(upPressed){eosY--;}
-					if(downPressed){eosY++;}
-					if(leftPressed){eosX--;}
-					if(rightPressed){eosX++;}
-					if(eosY<0)     {break;}
-					if(eosY>=max_Y){break;}
-					if(eosX<0)     {break;}
-					if(eosX>=max_X){break;}
-
-				}
-
-				if(cells[eosX][eosY]==0){
-					cells[eosX][eosY]=3;
-					cells[playerX_next][playerY_next]=1;
-					cells[playerX][playerY]=0;
-					playerX=playerX_next;
-					playerY=playerY_next;
-				}
-
-
-			}
-
-
-
-
-	   // requestAnimationFrame(draw);
-	}
-
-	setInterval(draw, 10);
-	//draw();
-</script>
+<script src="array-remove.js"  charset="utf-8"></script>
+<script src="AlienSquish.js"  charset="utf-8"></script>
 
 </body>
 </html>
