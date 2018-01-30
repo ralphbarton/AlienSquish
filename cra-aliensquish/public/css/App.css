@@ -1,0 +1,22 @@
+/* App.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-color: #CCC;
+}
+
+#root{
+    height: 100%;
+    width: 100%;
+    background: cyan;
+}
+
+.CTRA_App{
+    display: flex;
+    flex-flow: column nowrap;
+    height: inherit;
+    width: inherit;
+    position: absolute;
+}
