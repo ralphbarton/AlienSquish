@@ -1,4 +1,4 @@
-/* App.css */
+/* Aliens_App.css */
 
 body {
     margin: 0;
@@ -18,5 +18,9 @@ body {
     flex-flow: column nowrap;
     height: inherit;
     width: inherit;
+    position: absolute;
+}
+
+.GridCell {
     position: absolute;
 }
