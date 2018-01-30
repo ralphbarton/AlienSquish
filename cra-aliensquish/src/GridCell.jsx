@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import ImageA   from './asset/blk-A.png';
 import ImageB   from './asset/blk-B.png';
@@ -20,6 +20,7 @@ function GridCell(props) {
     return (
 	<img className="GridCell"
 	     src={selImg(props.type)} 
+	     alt=""
 	     style={{
 		 left: props.x*dim,
 		 top: props.y*dim

@@ -4,22 +4,38 @@ body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
-    background-color: #CCC;
 }
 
 #root{
     height: 100%;
     width: 100%;
-    background: cyan;
 }
 
-.CTRA_App{
+.title{
+    padding-bottom: 10px;
+}
+
+.title > div{
+    font-style: italic;
+    font-size: 60%;
+}
+
+.Aliens_App{
     display: flex;
     flex-flow: column nowrap;
-    height: inherit;
-    width: inherit;
-    position: absolute;
+    align-items: center;
 }
+
+.Aliens_App .box{
+    border: 7px solid grey;
+    width: 720px;
+    height: 480px;
+    position: relative;
+}
+
+
+
+
 
 .GridCell {
     position: absolute;

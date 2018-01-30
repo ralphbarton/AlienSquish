@@ -19,22 +19,27 @@ class Aliens_App extends Component {
 
 	      {/* 1. Heading Area */}
 	      <div className="title">
-		The synesthesia text-to-colour translator
-		<span>built in React</span>
+		The Alien-Squish Game
+		<div>built in React</div>
 	      </div>
 
+	      {/* 2. Heading Area */}
+	      <div className="box">
+	      
 	      {
 		  ["A", "B", "C", "D"].map( (str, i) => {
 		      return (
 			  <GridCell
 			     type={str}
+			     key={i}
 			     x={3-i}
 			     y={i}
 			     />
 		      );
 		  })
 	      }
-
+	    </div>
+	    
 	    </div>
 	);
     }
