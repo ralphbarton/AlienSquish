@@ -28,8 +28,6 @@ body {
 
 .Aliens_App .box{
     border: 7px solid grey;
-    width: 720px;
-    height: 480px;
     position: relative;
 }
 
