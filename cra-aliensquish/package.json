@@ -1,8 +1,9 @@
 {
-  "name": "cra-aliensquish",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
+    "name": "cra-aliensquish",
+    "version": "0.1.0",
+    "private": true,
+    "homepage": "http://www.ralphbarton.co.uk/AlienSquish",
+    "dependencies": {
     "immutability-helper": "^2.6.4",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"
