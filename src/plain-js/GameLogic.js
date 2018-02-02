@@ -68,10 +68,10 @@ const GameLogic = {
 	// ArrowKey = { d=[ 'x' | 'y' ], v = [ +1 -1 ] }
 
 	// 1. check if at edge of board (means no action)
+	const max = state.board[ArrowKey.d === "x" ? "width" : "height"] - 1;
 	if(ArrowKey.v<0){// wants to move up or left
 	    if(state.player[ArrowKey.d] <= 0){console.log("edge");return state;}//no action if at adge
 	}else{// wants to move down or right
-	    const max = state.board[ArrowKey.d === "x" ? "width" : "height"] - 1;
 	    if(state.player[ArrowKey.d] >= max){console.log("edge");return state;}//no action if at adge
 	}
 
@@ -80,9 +80,9 @@ const GameLogic = {
 	    y: state.player.y + (ArrowKey.d === "y" ? ArrowKey.v : 0)
 	};
 
-
-
-	if(!state.board.cells[playerNext.y][playerNext.x]){//simply moving into empty space
+	const cellEntered = state.board.cells[playerNext.y][playerNext.x];
+	
+	if(!cellEntered){//simply moving into empty space
 
 	    return update(state, {
 		player: {$set: playerNext}
@@ -91,16 +91,44 @@ const GameLogic = {
 	}else{
 	    // for now, assume moving into a Rock
 
-	    return update(state, {
-		board: {
-		    cells:{
-			[playerNext.y]: {
-			    [playerNext.x]: {type: {$set: "B"}}//leave the key, change the type
+	    const isX = ArrowKey.d === 'x'; // moving along x-direction
+	    var xyShuff = playerNext[ArrowKey.d];// it's an absolute coordinate, either x or y. It counts what will be shuffled
+	    const xyFix = playerNext[isX ? 'y' : 'x'];//take the other dimention
+	    while(true){
+		xyShuff += ArrowKey.v;
+		if((xyShuff < 0) || (xyShuff > max)){break;}
+
+		const x_ = isX ? xyShuff : xyFix;
+		const y_ = isX ? xyFix   : xyShuff;
+		const shuffCell = state.board.cells[y_][x_];
+		if(!shuffCell){//we've hit a gap!
+
+		    const s1 = update(state, {
+			board: {
+			    cells: {
+				[y_]: {
+				    [x_]: {$set: cellEntered}//move the entered cell to the final location
+				}
+			    }
+			},
+			player: {$set: playerNext}
+		    });
+		    
+		    return update(s1, {
+			board: {
+			    cells: {
+				[playerNext.y]: {
+				    [playerNext.x]: {$set: null}//and delete it at the entered location
+				}
+			    }
 			}
-		    }
-		},
-		player: {$set: playerNext}
-	    });
+		    });
+
+		    
+		}
+	    }
+	    
+
 	    
 	    
 	}
