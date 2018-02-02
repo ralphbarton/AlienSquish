@@ -4,8 +4,6 @@ import GridCell from './GridCell';
 
 import GameLogic from './plain-js/GameLogic';
 
-var _ = require('lodash');
-
 const C = {
     cPX: 40 // what is the side length of the 'cells', in pixels
 };
@@ -24,16 +22,16 @@ class Aliens_App extends Component {
 	    board: {
 		width: 20,
 		height: 15,
-		cells: GameLogic.newBoard(C, player, 3, 0.3)
+		cells: GameLogic.newBoard(20, 15, player, 3, 0.3)
 	    },
-	    ...player, // defined above...
+	    player, // defined above...
 	    aliens: [
 		{}, {} // nothing yet...
 	    ]
 	};
 
 	this.handleKeyDown     = this.handleKeyDown.bind(this);
-
+	
     }
 
 
@@ -69,6 +67,7 @@ class Aliens_App extends Component {
 
     render() {
 
+	const rasteredCells = GameLogic.getRasteredCells(this.state);
 	return (
 	    <div className="Aliens_App">
 
@@ -81,33 +80,21 @@ class Aliens_App extends Component {
 	      {/* 2. Board Area */}
 	      <div className="box"
 		   style={{
-		       width: (C.cPX * C.max_X),
-		       height: (C.cPX * C.max_Y)
+		       width: (C.cPX * this.state.board.width),
+		       height: (C.cPX * this.state.board.height)
 		   }}
 		   >
 	      
 	      {
-		  _.flatten(this.state.board.map( (row, i_y) => {
-		      return row.map( (cell, i_x) => {
-			  if (cell === 0){return null;}
-			  return (
-			      <GridCell
-				 type={cell}
-				 key={`x${i_x}y${i_y}`}
-				 x={i_x}
-				 y={i_y}
-				 />
+		  rasteredCells.map( cell => {
+		      if (!cell){return null;}
+		      return (
+			  <GridCell {...cell}
+			     />
 			  );
-		      });
-		  }))
-	      }
+		  })
 
-	    {/* 3. Draw the player */}
-	    	<GridCell
-	    type={"A"}
-	    x={this.state.pX}
-	    y={this.state.pY}
-		/>
+	      }
 		
 	    </div>
 	    
