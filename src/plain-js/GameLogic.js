@@ -92,6 +92,53 @@ const GameLogic = {
 	    // for now, assume moving into a Rock
 
 	    const isX = ArrowKey.d === 'x'; // moving along x-direction
+
+
+/* --new--
+	    
+	    let latestState = state;
+	    function nudgeInto(x, y, nudger){
+		const x_ = x + isX ? ArrowKey.v : 0;
+		const y_ = y + isX ? 0 : ArrowKey.v;
+		const xy_ = isX ? x_ : y_; //whichever of x or y is the direction of pushing.
+		if((xy_ < 0) || (xy_ > max)){return false;} // we hit a wall without encountering any gap
+		
+		const intoCell = state.board.cells[y_][x_];
+		if(!intoCell || nudgeInto(x_, y_, intoCell)){
+		    latestState = update(state, {
+			board: {
+			    cells: {
+				[y_]: {
+				    [x_]: {$set: nudger}//move the entered cell to the final location
+				}
+			    }
+			},
+			player: {$set: playerNext}
+		    });
+		}
+	    };
+
+	    //null
+	    if(nudgeInto(playerNext.x, playerNext.y, null)){
+		//movement occurred. Let player move
+		return update(state, {
+			board: {
+			    cells: {
+				[y_]: {
+				    [x_]: {$set: cellEntered}//move the entered cell to the final location
+				}
+			    }
+			},
+			player: {$set: playerNext}
+		});
+	    }else{
+		// those boulders aren't moving!
+		return state;
+	    }
+
+*/
+
+
 	    var xyShuff = playerNext[ArrowKey.d];// it's an absolute coordinate, either x or y. It counts what will be shuffled
 	    const xyFix = playerNext[isX ? 'y' : 'x'];//take the other dimention
 	    while(true){
