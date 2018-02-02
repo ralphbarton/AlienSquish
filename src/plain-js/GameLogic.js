@@ -6,16 +6,27 @@ const GameLogic = {
     // 'C' - board size. 'P' - player coords
     newBoard: function(W, H, player, aliens, dens){
 
+	var uniqueKey = 0;
+	
 	// 1. generate content
 	const longArr = Array(W * H).fill(null).map( ()=> {
-	    return (Math.random() > dens ? 0 : "C");
+	    if(Math.random() > dens){
+		return null;
+	    }else{
+		return {
+		    type: "C",
+		    key: uniqueKey++
+		};
+	    }
+
 	});
 
 	// 2. split into the rows
 	const Board = _.chunk(longArr, W)
 
 	// 3. Add aliens
-
+	// todo
+	
 	// 4. make a space for player
 	Board[player.y][player.x] = 0;
 	
@@ -31,23 +42,25 @@ const GameLogic = {
      */
     getRasteredCells: function(state){
 
-	const RasterCells = update(state.board.cells, {
-	    [state.player.y]: {
-		[state.player.x]: {$set: "A"}
-	    },
-	});
-	
-	return _.flatten(RasterCells.map( (row, y) => {
+	const flattenedCells = _.flatten(state.board.cells.map( (row, y) => {
 	    return row.map( (cell, x) => {
-		if (cell === 0){return null;}
+		if (!cell){return null;}
 		return {
-		    type:  cell,
-		    key:   `x${x}y${y}`,
+			...cell,
 		    x,
 		    y
 		};
 	    });
-	}))
+	}));
+
+	//add in the player...
+	flattenedCells.push({
+		...state.player,
+	    type: "A",
+	    key: "A"
+	});
+
+	return flattenedCells;
     },
     
 
@@ -69,7 +82,7 @@ const GameLogic = {
 
 
 
-	if(state.board.cells[playerNext.y][playerNext.x] === 0){//simply moving into empty space
+	if(!state.board.cells[playerNext.y][playerNext.x]){//simply moving into empty space
 
 	    return update(state, {
 		player: {$set: playerNext}
@@ -82,7 +95,7 @@ const GameLogic = {
 		board: {
 		    cells:{
 			[playerNext.y]: {
-			    [playerNext.x]: {$set: "B"}
+			    [playerNext.x]: {type: {$set: "B"}}//leave the key, change the type
 			}
 		    }
 		},

@@ -22,7 +22,7 @@ class Aliens_App extends Component {
 	    board: {
 		width: 20,
 		height: 15,
-		cells: GameLogic.newBoard(20, 15, player, 3, 0.3)
+		cells: GameLogic.newBoard(20, 15, player, 3, 0.2)
 	    },
 	    player, // defined above...
 	    aliens: [

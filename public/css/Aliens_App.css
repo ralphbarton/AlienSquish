@@ -37,4 +37,5 @@ body {
 
 .GridCell {
     position: absolute;
+    transition: top 0.1s, left 0.1s;
 }
