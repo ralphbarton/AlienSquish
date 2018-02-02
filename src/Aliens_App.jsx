@@ -7,9 +7,7 @@ import GameLogic from './plain-js/GameLogic';
 var _ = require('lodash');
 
 const C = {
-    cPX: 40,
-    max_X: 20,
-    max_Y: 15
+    cPX: 40 // what is the side length of the 'cells', in pixels
 };
 
 class Aliens_App extends Component {
@@ -17,18 +15,25 @@ class Aliens_App extends Component {
     constructor(){
 	super();
 
-	const start_coords = {
-	    pX: parseInt(C.max_X/2),
-	    pY: parseInt(C.max_Y/2)
+	const player = {
+	    x: 10,
+	    y: 7
 	};
 	
 	this.state = {
-	    board: GameLogic.newBoard(C, start_coords, 3, 0.3),
-	    ...start_coords
+	    board: {
+		width: 20,
+		height: 15,
+		cells: GameLogic.newBoard(C, player, 3, 0.3)
+	    },
+	    ...player, // defined above...
+	    aliens: [
+		{}, {} // nothing yet...
+	    ]
 	};
 
-	this.handleKeyDown     = this.hofHandleKeyDown.bind(this);
-//	console.log(this.state.board);
+	this.handleKeyDown     = this.handleKeyDown.bind(this);
+
     }
 
 
@@ -41,43 +46,23 @@ class Aliens_App extends Component {
     }
 
 
-    hofHandleKeyDown(e){
+    handleKeyDown(e){
 
-	const F = (d,v) => {
+	// extract direction 'd' and value 'v' from keystoke
+	const ArrowKey = (()=>{
+	    if(e.keyCode === 39) {return {d: "x", v: +1};} 	    // rightPressed
+	    if(e.keyCode === 37) {return {d: "x", v: -1};} 	    // leftPressed
+	    if(e.keyCode === 38) {return {d: "y", v: -1};} 	    // upPressed
+	    if(e.keyCode === 40) {return {d: "y", v: +1};} 	    // downPressed
+	    return null;
+	})();
 
-	    const s = this.state;
-	    const nextB = GameLogic.testMove(s.board, s.pX, s.pY, d, v, C);
-	    
-	    if(v<0){// wants to move up or left
-		if(this.state["p"+d] <= 0){return;}//no action if at adge
-	    }else{// wants to move down or right
-		if(this.state["p"+d] >= (C["max_"+d]-1)){return;}//no action if at adge
-	    }
+	// no further action if key was not an arrow key
+	if(!ArrowKey){return;}
 
-	    this.setState({
-		//player...
-		["p"+d]: this.state["p"+d]+v,
-		//board
-		board: nextB
-	    });
-	};
-
-	if(e.keyCode === 39) {
-	    // rightPressed
-	    F("X", +1); 
-	}
-	else if(e.keyCode === 37) {
-	    // leftPressed
-	    F("X", -1); 
-	}
-	else if(e.keyCode === 38) {
-	    // upPressed
-	    F("Y", -1); 
-	}
-	else if(e.keyCode === 40) {
-	    // downPressed
-	    F("Y", +1); 
-	}
+	// otherwise, get the new state taking this move into account.
+	const newState = GameLogic.playerMove(this.state, ArrowKey);
+	this.setState(newState);
 
     }
     

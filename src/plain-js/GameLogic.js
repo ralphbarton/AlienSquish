@@ -22,7 +22,59 @@ const GameLogic = {
 	return Board;
     },
 
-    testMove: function(board, pX, pY, d, v, C){ // d=[ 'X' | 'Y' ] v = [ +1 -1 ]
+
+    /*
+      "A" - player
+      "B" - red X
+      "C" - rock
+      "D" - alien!!
+     */
+    rasteriseBoard: function(state){
+
+	const RasterBoard = update(board, {
+	    [state.player.y]: {
+		[state.player.y]: {$set: "A"}
+	    },
+	});
+	
+	return _.flatten(state.board.cells.map( (row, y) => {
+	    return row.map( (cell, x) => {
+		if (cell === 0){return null;}
+		return {
+		    type:  cell,
+		    key:   `x${x}y${y}`,
+		    x,
+		    y
+		};
+	    });
+	}))
+    },
+    
+
+    playerMove: function(state, ArrowKey){
+	// ArrowKey = { d=[ 'x' | 'y' ], v = [ +1 -1 ] }
+
+
+
+	const s = this.state;
+	const nextB = GameLogic.testMove(s.board, s.pX, s.pY, K.d, K.v, C);
+	
+	if(K.v<0){// wants to move up or left
+	    if(this.state["p"+K.d] <= 0){return;}//no action if at adge
+	}else{// wants to move down or right
+	    if(this.state["p"+K.d] >= (C["max_"+K.d]-1)){return;}//no action if at adge
+	}
+
+	({
+	    //player...
+	    ["p"+K.d]: this.state["p"+K.d]+K.v,
+	    //board
+	    board: nextB
+	});
+	
+    },
+    
+    testMove: function(board, pX, pY, d, v, C){ 
 
 	
 
