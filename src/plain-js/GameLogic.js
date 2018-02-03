@@ -129,10 +129,30 @@ const GameLogic = {
 	    // case 1: nudge is into a location which is outside the board
 	    const xy = isX ? Coords.x : Coords.y; //whichever of x or y is the direction of pushing.
 	    if((xy < 0) || (xy > max)){return false;} // no movement
-	    
-	    // cases 2 & 3: where nudge is into an empty space (2) or a boulder (3)
+
+	    // case 2: player has moved into an Alien Player dies
 	    const intoCell = latestState.board.cells[Coords.y][Coords.x];
+	    const isIntoAlien = intoCell && (intoCell.type === "D");
+	    
+	    // case 3: nudge is a rock into an alien, AND at the other side is a Boulder OR Alien (i.e. non-empty)
 	    const Coords2 = getNext(Coords);
+	    const subsequentCell = latestState.board.cells[Coords2.y][Coords2.x];
+	    const isAlienSquish = isIntoAlien && subsequentCell;
+	    if(isAlienSquish){
+
+		// kill that alien
+		// TODO: write that logic. It will require immutable-helper Array.Splice!
+
+		/////////////
+		
+		// these lines are a copy of below. Gain conciseness (aka generalisation) but putting the condition
+		// of the containing if statement within the || || set below.
+		setBoardCell(Coords, nudger, true);
+		return true;
+
+	    }
+	    
+	    // cases 4 & 5: where nudge is into an empty space (4) or a boulder (5)
 
 	    /* this condition (incorporating the recursion) reads as does the motion
 	       actually take place (potentially some way 'downstream'...) */
