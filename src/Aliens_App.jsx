@@ -17,6 +17,8 @@ class Aliens_App extends Component {
 	    x: 10,
 	    y: 7
 	};
+
+	const aliens = GameLogic.genAliens(20, 15, player, 6);
 	
 	this.state = {
 	    board: {
@@ -25,9 +27,7 @@ class Aliens_App extends Component {
 		cells: GameLogic.newBoard(20, 15, player, 3, 0.2)
 	    },
 	    player, // defined above...
-	    aliens: [
-		{}, {} // nothing yet...
-	    ]
+	    aliens
 	};
 
 	this.handleKeyDown     = this.handleKeyDown.bind(this);

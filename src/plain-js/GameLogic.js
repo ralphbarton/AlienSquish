@@ -4,34 +4,47 @@ var _ = require('lodash');
 const GameLogic = {
 
     // 'C' - board size. 'P' - player coords
+    genAliens: function(W, H, player, qty){
+	return Array(qty).fill(null).map( ()=> {
+
+	    // this logic does not prevent alien-alien, or alien-player overlaps, which should be blocked.
+	    return {
+		x: _.random(0, W-1),
+		y: _.random(0, H-1),
+		speed: Math.random()
+	    };
+	});
+    },
+
+    
     newBoard: function(W, H, player, aliens, dens){
 
 	var uniqueKey = 0;
 	
-	// 1. generate content
-	const longArr = Array(W * H).fill(null).map( ()=> {
-	    if(Math.random() > dens){
-		return null;
-	    }else{
+	// Generate content
+	const longArr = Array(W * H).fill(null).map( (emptyElem, i)=> {
+
+	    // 1. probabalistically determine if boulder is to be placed
+	    var isBoulder = Math.random() <= dens;
+
+	    // 2. no boulder if the player is there...
+	    isBoulder = isBoulder && (i !== player.y * W + player.x);
+
+	    if(isBoulder){
 		return {
 		    type: "C",
 		    key: uniqueKey++
 		};
 	    }
+	    return null;
 
 	});
 
-	// 2. split into the rows
-	const Board = _.chunk(longArr, W)
-
-	// 3. Add aliens
-	// todo
-	
-	// 4. make a space for player
-	Board[player.y][player.x] = 0;
-	
-	return Board;
+	// split into rows and return
+	return _.chunk(longArr, W);
     },
+
+    
 
 
     /*
@@ -54,13 +67,18 @@ const GameLogic = {
 	}));
 
 	//add in the player...
-	flattenedCells.push({
-		...state.player,
-	    type: "A",
-	    key: "A"
-	});
+	const flattenedCellsPlus = flattenedCells.concat(
+	    state.aliens.map( (ALI, i) => {
+		return {...ALI, type: "D", key: 1000+i}
+	    }),
+	    [{
+		    ...state.player,
+		type: "A",
+		key: "A"
+	    }]
+	);
 
-	return _.sortBy(flattenedCells, 'key');
+	return _.sortBy(flattenedCellsPlus, 'key');
     },
     
 
