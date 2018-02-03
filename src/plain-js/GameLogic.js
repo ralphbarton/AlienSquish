@@ -92,47 +92,32 @@ const GameLogic = {
 	    // for now, assume moving into a Rock
 
 	    const isX = ArrowKey.d === 'x'; // moving along x-direction
-
-
-
 	    
 	    var latestState = state;
-	    function updateState(x, y, v){
-		latestState = update(latestState, {
-		    board: {
-			cells: {
-			    [y]: {
-				[x]: {$set: v}
-			    }
-			}
-		    }
-		});
-	    };
 
 	    function nudgeInto(x, y, nudger){
 
-		console.log("nudgeInto()", x, y);
+		// case 1: nudge is into a location which is outside the board
+		const xy = isX ? x : y; //whichever of x or y is the direction of pushing.
+		if((xy < 0) || (xy > max)){return false;} // no movement
+	
+		
+		// cases 2 & 3: where nudge is into an empty space (2) or a boulder (3)
+		const intoCell = latestState.board.cells[y][x];
 		const x_ = x + (isX ? ArrowKey.v : 0);
 		const y_ = y + (isX ? 0 : ArrowKey.v);
-		const xy_ = isX ? x_ : y_; //whichever of x or y is the direction of pushing.
-		if((xy_ < 0) || (xy_ > max)){return false;} // we hit a wall without encountering any gap
 
-		const intoCell = latestState.board.cells[y][x];
-		const subsequentCell = latestState.board.cells[y_][x_];
-		// trigger a move if (1) the space is EMPTY or (2) the nugde ultimately is allowed
-		console.log("intoCell", x_, y_,intoCell, !intoCell);
+		/* this condition (incorporating the recursion) reads as does the motion
+		   actually take place (potentially some way 'downstream'...) */
+		if(!intoCell || nudgeInto(x_, y_, intoCell)){
 
-		if(!subsequentCell){
-		    updateState(x, y, nudger);
-		    updateState(x_, y_, intoCell);
+		    latestState = update(latestState, {
+			board: {
+			    cells: {[y]: {[x]:  {$set: nudger}  }}
+			}
+		    });
 		    return true;
 		}
-
-		if(nudgeInto(x_, y_, intoCell)){
-		    updateState(x, y, nudger);
-		    return true;
-		}
-		return false;
 		
 	    };
 
