@@ -88,6 +88,34 @@ const GameLogic = {
 	const isX = ArrowKey.d === 'x'; // moving along x-direction
 	const max = state.board[isX ? "width" : "height"] - 1;
 	var latestState = state;
+
+	function setBoardCell(Coords, obj, withAlienUpdate){
+
+	    //update the POSITION of a particular alien, in the aliens Array of 'state'
+	    if(withAlienUpdate && obj && obj.type === "D"){
+		latestState = update(latestState, {
+		    aliens: {
+			[obj.key % 1000]: {
+			    x: {$set: Coords.x},
+			    y: {$set: Coords.y}
+			}
+		    }
+		});
+	    }
+
+	    // update the board cell
+	    latestState = update(latestState, {
+		board: {
+		    cells: {[Coords.y]: {[Coords.x]:  {$set: obj}  }}
+		}
+	    });
+	};
+
+	// add the aliens into the board
+	state.aliens.forEach( (ALI, i)=>{
+	    setBoardCell(ALI, {type: "D", key: 1000+i});
+	});	
+	
 	
 	function getNext(Coords){
 	    return {
@@ -110,11 +138,7 @@ const GameLogic = {
 	       actually take place (potentially some way 'downstream'...) */
 	    if(!intoCell || nudgeInto(Coords2, intoCell)){
 
-		latestState = update(latestState, {
-		    board: {
-			cells: {[Coords.y]: {[Coords.x]:  {$set: nudger}  }}
-		    }
-		});
+		setBoardCell(Coords, nudger, true);
 		return true;
 	    }
 	};
@@ -123,6 +147,18 @@ const GameLogic = {
 	const playerNext = getNext(state.player);
 	if(nudgeInto(playerNext, null)){
 	    //movement occurred. Let player move
+
+	    // remove the aliens from the board
+	    latestState = update(latestState, {
+		board: {
+		    cells: {
+			$set: latestState.board.cells.map( (row, y) => {
+			    return row.map( (cell, x) => {return (cell && cell.type) === "D" ? null : cell;})
+			})
+		    }
+		}
+	    });
+
 	    return update(latestState, {player: {$set: playerNext}});
 	}else{
 	    // those boulders aren't moving!
