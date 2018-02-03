@@ -60,7 +60,7 @@ const GameLogic = {
 	    key: "A"
 	});
 
-	return flattenedCells;
+	return _.sortBy(flattenedCells, 'key');
     },
     
 
