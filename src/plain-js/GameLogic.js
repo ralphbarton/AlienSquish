@@ -94,88 +94,56 @@ const GameLogic = {
 	    const isX = ArrowKey.d === 'x'; // moving along x-direction
 
 
-/* --new--
+
 	    
-	    let latestState = state;
-	    function nudgeInto(x, y, nudger){
-		const x_ = x + isX ? ArrowKey.v : 0;
-		const y_ = y + isX ? 0 : ArrowKey.v;
-		const xy_ = isX ? x_ : y_; //whichever of x or y is the direction of pushing.
-		if((xy_ < 0) || (xy_ > max)){return false;} // we hit a wall without encountering any gap
-		
-		const intoCell = state.board.cells[y_][x_];
-		if(!intoCell || nudgeInto(x_, y_, intoCell)){
-		    latestState = update(state, {
-			board: {
-			    cells: {
-				[y_]: {
-				    [x_]: {$set: nudger}//move the entered cell to the final location
-				}
+	    var latestState = state;
+	    function updateState(x, y, v){
+		latestState = update(latestState, {
+		    board: {
+			cells: {
+			    [y]: {
+				[x]: {$set: v}
 			    }
-			},
-			player: {$set: playerNext}
-		    });
-		}
+			}
+		    }
+		});
 	    };
 
-	    //null
+	    function nudgeInto(x, y, nudger){
+
+		console.log("nudgeInto()", x, y);
+		const x_ = x + (isX ? ArrowKey.v : 0);
+		const y_ = y + (isX ? 0 : ArrowKey.v);
+		const xy_ = isX ? x_ : y_; //whichever of x or y is the direction of pushing.
+		if((xy_ < 0) || (xy_ > max)){return false;} // we hit a wall without encountering any gap
+
+		const intoCell = latestState.board.cells[y][x];
+		const subsequentCell = latestState.board.cells[y_][x_];
+		// trigger a move if (1) the space is EMPTY or (2) the nugde ultimately is allowed
+		console.log("intoCell", x_, y_,intoCell, !intoCell);
+
+		if(!subsequentCell){
+		    updateState(x, y, nudger);
+		    updateState(x_, y_, intoCell);
+		    return true;
+		}
+
+		if(nudgeInto(x_, y_, intoCell)){
+		    updateState(x, y, nudger);
+		    return true;
+		}
+		return false;
+		
+	    };
+
+	    // paasing null will leave an empty space where the pushed bolder moves from
 	    if(nudgeInto(playerNext.x, playerNext.y, null)){
 		//movement occurred. Let player move
-		return update(state, {
-			board: {
-			    cells: {
-				[y_]: {
-				    [x_]: {$set: cellEntered}//move the entered cell to the final location
-				}
-			    }
-			},
-			player: {$set: playerNext}
-		});
+		return update(latestState, {player: {$set: playerNext}});
 	    }else{
 		// those boulders aren't moving!
 		return state;
 	    }
-
-*/
-
-
-	    var xyShuff = playerNext[ArrowKey.d];// it's an absolute coordinate, either x or y. It counts what will be shuffled
-	    const xyFix = playerNext[isX ? 'y' : 'x'];//take the other dimention
-	    while(true){
-		xyShuff += ArrowKey.v;
-		if((xyShuff < 0) || (xyShuff > max)){break;}
-
-		const x_ = isX ? xyShuff : xyFix;
-		const y_ = isX ? xyFix   : xyShuff;
-		const shuffCell = state.board.cells[y_][x_];
-		if(!shuffCell){//we've hit a gap!
-
-		    const s1 = update(state, {
-			board: {
-			    cells: {
-				[y_]: {
-				    [x_]: {$set: cellEntered}//move the entered cell to the final location
-				}
-			    }
-			},
-			player: {$set: playerNext}
-		    });
-		    
-		    return update(s1, {
-			board: {
-			    cells: {
-				[playerNext.y]: {
-				    [playerNext.x]: {$set: null}//and delete it at the entered location
-				}
-			    }
-			}
-		    });
-
-		    
-		}
-	    }
-	    
-
 	    
 	    
 	}
