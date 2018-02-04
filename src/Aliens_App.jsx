@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import GridCell from './GridCell';
-import LevelExtact from './LevelExtact';
+//import LevelExtact from './LevelExtact';
 
 import GameLogic from './plain-js/GameLogic';
 
@@ -100,8 +100,10 @@ class Aliens_App extends Component {
 		
 	    </div>
 
+		{/*
 		<LevelExtact/>
-		
+		  */}
+
 	    </div>
 	);
     }

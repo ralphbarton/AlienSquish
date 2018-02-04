@@ -5,12 +5,13 @@ const GameLogic = {
 
     // 'C' - board size. 'P' - player coords
     genAliens: function(W, H, player, qty){
-	return Array(qty).fill(null).map( ()=> {
+	return Array(qty).fill(null).map( (emptyElem, i) => {
 
 	    // this logic does not prevent alien-alien, or alien-player overlaps, which should be blocked.
 	    return {
 		x: _.random(0, W-1),
 		y: _.random(0, H-1),
+		key: 2000+i,
 		speed: Math.random()
 	    };
 	});
@@ -22,7 +23,7 @@ const GameLogic = {
 	var uniqueKey = 0;
 	
 	// Generate content
-	const longArr = Array(W * H).fill(null).map( (emptyElem, i)=> {
+	const longArr = Array(W * H).fill(null).map( (emptyElem, i) => {
 
 	    // 1. probabalistically determine if boulder is to be placed
 	    var isBoulder = Math.random() <= dens;
@@ -66,10 +67,11 @@ const GameLogic = {
 	    });
 	}));
 
-	//add in the player...
+
 	const flattenedCellsPlus = flattenedCells.concat(
+	    //add in the aliens...
 	    state.aliens.map( (ALI, i) => {
-		return {...ALI, type: "D", key: 1000+i}
+		return {...ALI, type: "D"}
 	    }),
 	    [{
 		    ...state.player,
@@ -123,12 +125,16 @@ const GameLogic = {
 		y: Coords.y + (isX ? 0 : ArrowKey.v)
 	    };
 	};
+
+	function outside(Coords){
+	    const xy = isX ? Coords.x : Coords.y; //whichever of x or y is the direction of pushing.
+	    return (xy < 0) || (xy > max);
+	};
 	
 	function nudgeInto(Coords, nudger){
 
 	    // case 1: nudge is into a location which is outside the board
-	    const xy = isX ? Coords.x : Coords.y; //whichever of x or y is the direction of pushing.
-	    if((xy < 0) || (xy > max)){return false;} // no movement
+	    if(outside(Coords)){return false;}
 
 	    // case 2: player has moved into an Alien Player dies
 	    const intoCell = latestState.board.cells[Coords.y][Coords.x];
@@ -136,14 +142,14 @@ const GameLogic = {
 	    
 	    // case 3: nudge is a rock into an alien, AND at the other side is a Boulder OR Alien (i.e. non-empty)
 	    const Coords2 = getNext(Coords);
-	    const subsequentCell = latestState.board.cells[Coords2.y][Coords2.x];
+	    const subsequentCell = outside(Coords2) || latestState.board.cells[Coords2.y][Coords2.x];
 	    const isAlienSquish = isIntoAlien && subsequentCell;
 	    if(isAlienSquish){
 
 		// kill that alien
-		// TODO: write that logic. It will require immutable-helper Array.Splice!
-
-		/////////////
+		latestState = update(latestState, {
+		    aliens: {$splice: [[intoCell.key % 1000, 1]]}
+		});
 		
 		// these lines are a copy of below. Gain conciseness (aka generalisation) but putting the condition
 		// of the containing if statement within the || || set below.
