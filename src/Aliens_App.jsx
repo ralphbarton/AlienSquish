@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 
 import GridCell from './GridCell';
+import LevelExtact from './LevelExtact';
 
 import GameLogic from './plain-js/GameLogic';
+
 
 const C = {
     cPX: 40 // what is the side length of the 'cells', in pixels
@@ -97,7 +99,9 @@ class Aliens_App extends Component {
 	      }
 		
 	    </div>
-	    
+
+		<LevelExtact/>
+		
 	    </div>
 	);
     }
