@@ -39,3 +39,12 @@ body {
     position: absolute;
     transition: top 0.1s, left 0.1s;
 }
+
+textarea{
+      width: 275px;
+    height: 250px;
+}
+
+canvas{
+    transform: scale(1);
+}
