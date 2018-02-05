@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 
 import GridCell from './GridCell';
+import ScoresStrip from './ScoresStrip';
 //import LevelExtact from './LevelExtact';
 
 import GameLogic from './plain-js/GameLogic';
 
-
-const C = {
-    cPX: 40 // what is the side length of the 'cells', in pixels
-};
 
 class Aliens_App extends Component {
 
@@ -17,7 +14,9 @@ class Aliens_App extends Component {
 
 	const player = {
 	    x: 10,
-	    y: 7
+	    y: 7,
+	    lives: 5,
+	    score: 0
 	};
 
 	const aliens = GameLogic.genAliens(20, 15, player, 6);
@@ -29,7 +28,8 @@ class Aliens_App extends Component {
 		cells: GameLogic.newBoard(20, 15, player, 3, 0.2)
 	    },
 	    player, // defined above...
-	    aliens
+	    aliens,
+	    level: 1
 	};
 
 	this.handleKeyDown     = this.handleKeyDown.bind(this);
@@ -79,11 +79,15 @@ class Aliens_App extends Component {
 		<div>built in React</div>
 	      </div>
 
-	      {/* 2. Board Area */}
+
+	      {/* 3. Board Area */}
+	      <ScoresStrip state={this.state} />
+		   
+	      {/* 3. Board Area */}
 	      <div className="box"
 		   style={{
-		       width: (C.cPX * this.state.board.width),
-		       height: (C.cPX * this.state.board.height)
+		       width: (40 * this.state.board.width),
+		       height: (40 * this.state.board.height)
 		   }}
 		   >
 	      
@@ -100,6 +104,8 @@ class Aliens_App extends Component {
 		
 	    </div>
 
+
+		{/* 4. Used for Level data generation (not part of the actual game) */}
 		{/*
 		<LevelExtact/>
 		  */}

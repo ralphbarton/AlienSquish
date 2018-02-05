@@ -170,8 +170,9 @@ const GameLogic = {
 	};
 
 	// passing the 'null' will leave an empty space where the pushed bolder moves from
-	const playerNext = getNext(state.player);
-	if(nudgeInto(playerNext, null)){
+	const playerNextCoords = getNext(state.player);
+	const playerNext = update(state.player, {x: {$set: playerNextCoords.x}, y: {$set: playerNextCoords.y}});
+	if(nudgeInto(playerNextCoords, null)){
 	    //movement occurred. Let player move
 
 	    // remove the aliens from the board

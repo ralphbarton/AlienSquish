@@ -4,6 +4,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
+    background: #7b70e5;
 }
 
 #root{
@@ -27,8 +28,9 @@ body {
 }
 
 .Aliens_App .box{
-    border: 7px solid grey;
+    border: 7px solid black;
     position: relative;
+    background: wheat
 }
 
 
@@ -47,4 +49,35 @@ textarea{
 
 canvas{
     transform: scale(1);
+}
+
+
+
+
+
+/* to be ported.... */
+/* ScoresStrip.css */
+div.ScoresStrip{
+    display: flex;
+    width: 50em;
+    margin-top: 1em;
+    margin-bottom: 0.4em;
+}
+
+div.ScoresStrip > div{
+    flex: 1 auto;
+    align-items:flex-end;
+    display: flex;
+    border: 2px solid black;
+    background: wheat;
+    margin: 0 0.2em;
+    padding: 0 1em;
+}
+
+
+div.ScoresStrip > div > div:last-child{
+    font-weight: bold;
+    padding-left: 0.5em;
+    font-size: 110%;
+    color: #850;
 }
