@@ -97,7 +97,7 @@ const GameLogic = {
 	    if(withAlienUpdate && obj && obj.type === "D"){
 		latestState = update(latestState, {
 		    aliens: {
-			[obj.key % 1000]: {
+			[obj.ArrayIndex]: {
 			    x: {$set: Coords.x},
 			    y: {$set: Coords.y}
 			}
@@ -115,7 +115,7 @@ const GameLogic = {
 
 	// add the aliens into the board
 	state.aliens.forEach( (ALI, i)=>{
-	    setBoardCell(ALI, {type: "D", key: 1000+i});
+	    setBoardCell(ALI, {type: "D", ArrayIndex: i});
 	});	
 	
 	
@@ -148,7 +148,7 @@ const GameLogic = {
 
 		// kill that alien
 		latestState = update(latestState, {
-		    aliens: {$splice: [[intoCell.key % 1000, 1]]}
+		    aliens: {$splice: [[intoCell.ArrayIndex, 1]]}
 		});
 		
 		// these lines are a copy of below. Gain conciseness (aka generalisation) but putting the condition
