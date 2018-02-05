@@ -80,3 +80,60 @@ div.ScoresStrip > div > div:last-child{
     font-size: 110%;
     color: #850;
 }
+
+
+
+
+
+/* to be ported.... */
+/* ScoresStrip.css */
+.Modal{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: rgba(0,0,0,0.5);
+}
+
+.Modal.PLAY{
+    display: none;
+}
+
+.Modal > div{
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%, -50%);
+    width: 42em;
+    min-height: 14em;
+    background: rgba(0,0,0,0.7);
+    border-radius: 20px;
+    box-shadow: 0px 0px 30px 8px black;
+    padding: 1em;
+    color: rgba(255,255,255,0.82);
+    border: 7px double rgba(255,0,0,0.7);
+}
+
+.Modal > div > div{
+    margin: 1em 0;
+    font-size: 120%;
+}
+
+.Modal h1, .Modal .action{
+    text-align: center;
+}
+
+.Modal .action{
+    text-decoration: underline;
+    font-size: 180%;
+    font-weight: bold;
+    color: lightskyblue;
+    cursor: pointer;
+    transition: 0.2s;
+    text-shadow: 0 0 9px black;
+}
+
+.Modal .action:hover{
+    color: yellow;
+    text-shadow: 0 0 9px red;
+}

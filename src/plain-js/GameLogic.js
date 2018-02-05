@@ -145,10 +145,11 @@ const GameLogic = {
 	    const subsequentCell = outside(Coords2) || latestState.board.cells[Coords2.y][Coords2.x];
 	    const isAlienSquish = isIntoAlien && subsequentCell;
 	    if(isAlienSquish){
-
+		
 		// kill that alien
 		latestState = update(latestState, {
-		    aliens: {$splice: [[intoCell.ArrayIndex, 1]]}
+		    aliens: {$splice: [[intoCell.ArrayIndex, 1]]},
+		    player: {score: {$apply: x => {return x+5;}}}
 		});
 		
 		// these lines are a copy of below. Gain conciseness (aka generalisation) but putting the condition
@@ -171,11 +172,11 @@ const GameLogic = {
 
 	// passing the 'null' will leave an empty space where the pushed bolder moves from
 	const playerNextCoords = getNext(state.player);
-	const playerNext = update(state.player, {x: {$set: playerNextCoords.x}, y: {$set: playerNextCoords.y}});
+
 	if(nudgeInto(playerNextCoords, null)){
 	    //movement occurred. Let player move
 
-	    // remove the aliens from the board
+	    // Clear all aliens that were placed on the board for the calculations, prior to returning board as state
 	    latestState = update(latestState, {
 		board: {
 		    cells: {
@@ -185,7 +186,14 @@ const GameLogic = {
 		    }
 		}
 	    });
+	    
+	    if(latestState.aliens.length === 0){
+		latestState = update(latestState, {mode: {$set: "COMPLETE"}});
+	    }
 
+	    //update player position
+	    const playerNext = update(latestState.player, {x: {$set: playerNextCoords.x}, y: {$set: playerNextCoords.y}});
+	    
 	    return update(latestState, {player: {$set: playerNext}});
 	}else{
 	    // those boulders aren't moving!

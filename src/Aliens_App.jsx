@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import GridCell from './GridCell';
 import ScoresStrip from './ScoresStrip';
+import Modal from './Modal';
 //import LevelExtact from './LevelExtact';
 
 import GameLogic from './plain-js/GameLogic';
@@ -29,7 +30,8 @@ class Aliens_App extends Component {
 	    },
 	    player, // defined above...
 	    aliens,
-	    level: 1
+	    level: 1,
+	    mode: "START"
 	};
 
 	this.handleKeyDown     = this.handleKeyDown.bind(this);
@@ -49,6 +51,8 @@ class Aliens_App extends Component {
     handleKeyDown(e){
 
 	// extract direction 'd' and value 'v' from keystoke
+	if(this.state.mode !== "PLAY"){return;}
+	
 	const ArrowKey = (()=>{
 	    if(e.keyCode === 39) {return {d: "x", v: +1};} 	    // rightPressed
 	    if(e.keyCode === 37) {return {d: "x", v: -1};} 	    // leftPressed
@@ -75,17 +79,20 @@ class Aliens_App extends Component {
 	return (
 	    <div className="Aliens_App">
 
-	      {/* 1. Heading Area */}
+	      {/* 1. The Modal overlay (it may or may not actually be visible) */}
+	      <Modal state={this.state} setState={this.setState.bind(this)} />
+
+	      {/* 2. Heading Area */}
 	      <div className="title">
 		The Alien-Squish Game
 		<div>built in React</div>
 	      </div>
 
 
-	      {/* 3. Board Area */}
+	      {/* 3. The Game States (scores strip) */}
 	      <ScoresStrip state={this.state} width={boxW}/>
 		   
-	      {/* 3. Board Area */}
+	      {/* 4. Board Area */}
 	      <div className="box"
 		   style={{
 		       width: boxW,
@@ -107,7 +114,7 @@ class Aliens_App extends Component {
 	    </div>
 
 
-		{/* 4. Used for Level data generation (not part of the actual game) */}
+		{/* 5. Used for Level data generation (not part of the actual game) */}
 		{/*
 		<LevelExtact/>
 		  */}
