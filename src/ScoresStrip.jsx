@@ -12,7 +12,7 @@ function ScoresStrip(props) {
     ];
     
     return (
-	<div className="ScoresStrip">
+	<div className="ScoresStrip" style={{width: props.width + 16}}>
 	  {stats.map( (KVP, i)=>{
 	      return (
 		  <div key={i}>

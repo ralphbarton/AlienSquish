@@ -69,6 +69,8 @@ class Aliens_App extends Component {
 
     render() {
 
+	const boxW = 40 * this.state.board.width;
+	const boxH = 40 * this.state.board.height;
 	const rasteredCells = GameLogic.getRasteredCells(this.state);
 	return (
 	    <div className="Aliens_App">
@@ -81,13 +83,13 @@ class Aliens_App extends Component {
 
 
 	      {/* 3. Board Area */}
-	      <ScoresStrip state={this.state} />
+	      <ScoresStrip state={this.state} width={boxW}/>
 		   
 	      {/* 3. Board Area */}
 	      <div className="box"
 		   style={{
-		       width: (40 * this.state.board.width),
-		       height: (40 * this.state.board.height)
+		       width: boxW,
+		       height: boxH
 		   }}
 		   >
 	      
