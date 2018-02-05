@@ -1,9 +1,9 @@
 import React from 'react';
 
-import ImageA   from './asset/blk-A.png';
-import ImageB   from './asset/blk-B.png';
-import ImageC   from './asset/blk-C.png';
-import ImageD   from './asset/blk-D.png';
+import ImageA   from './asset/blk-A-a.png';
+import ImageB   from './asset/blk-B-a.png';
+import ImageC   from './asset/blk-C-a.png';
+import ImageD   from './asset/blk-D-a.png';
 
 const dim = 40;
 
