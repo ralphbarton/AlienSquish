@@ -18,7 +18,7 @@ const GameLogic = {
     },
 
     
-    newBoard: function(W, H, player, aliens, dens){
+    newBoard: function(W, H, player, aliens, dens_Boulder, dens_Obstruc){
 
 	var uniqueKey = 0;
 	
@@ -26,17 +26,20 @@ const GameLogic = {
 	const longArr = Array(W * H).fill(null).map( (emptyElem, i) => {
 
 	    // 1. probabalistically determine if boulder is to be placed
-	    var isBoulder = Math.random() <= dens;
+	    var isBoulder = Math.random() <= dens_Boulder;
+	    var isObstruc = !isBoulder && Math.random() <= dens_Obstruc;
 
 	    // 2. no boulder if the player is there...
 	    isBoulder = isBoulder && (i !== player.y * W + player.x);
 
-	    if(isBoulder){
+	    if(isBoulder || isObstruc){
 		return {
-		    type: "C",
+		    type: isBoulder ? "C" : "B",
 		    key: uniqueKey++
 		};
 	    }
+
+	    
 	    return null;
 
 	});
@@ -136,11 +139,16 @@ const GameLogic = {
 	    // case 1: nudge is into a location which is outside the board
 	    if(outside(Coords)){return false;}
 
-	    // case 2: player has moved into an Alien Player dies
+	    // case 2: nudge is into an immovable red rock ('obstruction')
 	    const intoCell = latestState.board.cells[Coords.y][Coords.x];
+	    if(intoCell && (intoCell.type === "B")){
+		return false;
+	    }
+	    
+	    // case 3: player has moved into an Alien Player dies
 	    const isIntoAlien = intoCell && (intoCell.type === "D");
 	    
-	    // case 3: nudge is a rock into an alien, AND at the other side is a Boulder OR Alien (i.e. non-empty)
+	    // case 4: nudge is a rock into an alien, AND at the other side is a Boulder OR Alien (i.e. non-empty)
 	    const Coords2 = getNext(Coords);
 	    const subsequentCell = outside(Coords2) || latestState.board.cells[Coords2.y][Coords2.x];
 	    const isAlienSquish = isIntoAlien && subsequentCell;
@@ -159,7 +167,7 @@ const GameLogic = {
 
 	    }
 	    
-	    // cases 4 & 5: where nudge is into an empty space (4) or a boulder (5)
+	    // cases 5 & 6: where nudge is into an empty space (5) or a boulder (6)
 
 	    /* this condition (incorporating the recursion) reads as does the motion
 	       actually take place (potentially some way 'downstream'...) */
