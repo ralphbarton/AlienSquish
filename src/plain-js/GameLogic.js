@@ -98,9 +98,10 @@ const GameLogic = {
 
 	    //update the POSITION of a particular alien, in the aliens Array of 'state'
 	    if(withAlienUpdate && obj && obj.type === "D"){
+		const alienIndex = _.findIndex(latestState.aliens, {key: obj.key});
 		latestState = update(latestState, {
 		    aliens: {
-			[obj.ArrayIndex]: {
+			[alienIndex]: {
 			    x: {$set: Coords.x},
 			    y: {$set: Coords.y}
 			}
@@ -118,7 +119,7 @@ const GameLogic = {
 
 	// add the aliens into the board
 	state.aliens.forEach( (ALI, i)=>{
-	    setBoardCell(ALI, {type: "D", ArrayIndex: i});
+	    setBoardCell(ALI, {type: "D", key: ALI.key});
 	});	
 	
 	
@@ -151,18 +152,22 @@ const GameLogic = {
 	    // case 4: nudge is a rock into an alien, AND at the other side is a Boulder OR Alien (i.e. non-empty)
 	    const Coords2 = getNext(Coords);
 	    const subsequentCell = outside(Coords2) || latestState.board.cells[Coords2.y][Coords2.x];
-	    const isAlienSquish = isIntoAlien && subsequentCell;
+	    const isAlienSquish = isIntoAlien && subsequentCell && (subsequentCell.type !== "D");
 	    if(isAlienSquish){
-		
+
+
 		// kill that alien
+		const alienIndex = _.findIndex(latestState.aliens, {key: intoCell.key});
+
 		latestState = update(latestState, {
-		    aliens: {$splice: [[intoCell.ArrayIndex, 1]]},
+		    aliens: {$splice: [[alienIndex, 1]]},
 		    player: {score: {$apply: x => {return x+5;}}}
 		});
 		
 		// these lines are a copy of below. Gain conciseness (aka generalisation) but putting the condition
 		// of the containing if statement within the || || set below.
 		setBoardCell(Coords, nudger, true);
+		
 		return true;
 
 	    }
