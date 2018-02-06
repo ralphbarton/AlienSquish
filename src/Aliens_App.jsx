@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import GridCell from './GridCell';
 import ScoresStrip from './ScoresStrip';
 import Modal from './Modal';
-//import LevelExtact from './LevelExtact';
+import LevelExtact from './LevelExtact';
 
 import GameLogic from './plain-js/GameLogic';
 
@@ -115,9 +115,9 @@ class Aliens_App extends Component {
 
 
 		{/* 5. Used for Level data generation (not part of the actual game) */}
-		{/*
+
 		<LevelExtact/>
-		  */}
+
 
 	    </div>
 	);

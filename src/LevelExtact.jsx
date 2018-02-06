@@ -13,6 +13,38 @@ class LevelExtact extends React.PureComponent {
 	var context = canvas.getContext('2d');
 	var image = new Image();
 
+	/*
+	 (w x h) - pixels
+	 column 1: 9x9
+	 column 2: 20x10
+	 column 3: 25x15
+	 column 4: 10x15	 
+	 */
+
+	const bitmapColumns = [
+	    {// 1st
+		width: 9,
+		height: 9,
+		qty: 6
+	    },
+	    {// 2nd
+		width: 20,
+		height: 10,
+		qty: 6
+	    },
+	    {// 3rd
+		width: 25,
+		height: 15,
+		qty: 4
+	    },
+	    {// 4th
+		width: 10,
+		height: 15,
+		qty: 4
+	    }
+	];
+
+	
 	const TS = this;
 	image.onload = function(){
 	    context.drawImage(image,0,0,canvas.width,canvas.height);
@@ -38,32 +70,51 @@ class LevelExtact extends React.PureComponent {
 		return 0;
 	    };
 
-
-	    /*
-	     (w x h) - pixels
-	     column 1: 9x9
-	     column 2: 20x10
-	     column 3: 25x15
-	     column 4: 10x15
-	     
-	     */
 	    const x = 1;
 	    const y = 1;
 	    const w = 9;
 	    const h = 9;
 
 	    const result = [];
-
-	    for (var j=0; j < h; j++){
-
-		result[j] = [];
-		for (var i=0; i < w; i++){
-		    result[j][i] = Bol(Arr[y+j][x+i]);
-			
-		}
-	    }
+	    //cumulative position pointer
+	    var XX = 0;
+	    var YY = 0;
 	    
-	    TS.textarea_el.value = JSON.stringify(result);
+	    bitmapColumns.forEach( col => {
+
+		YY = 1;
+		for (var k=0; k < col.qty; k++){
+
+		    const singleLevel = [];
+		    for (var j=0; j < col.height; j++){
+			singleLevel[j] = [];
+			for (var i=0; i < col.width; i++){
+			    singleLevel[j][i] = Bol(Arr[YY+j][XX+i]);
+			    
+			}
+		    }
+
+		    result.push({
+			width: col.width,
+			height: col.height,
+			data: singleLevel
+		    });
+
+		    YY += col.height + 1;
+		}
+		XX += col.width + 1;
+	    });
+
+	    const textdata = JSON.stringify(result);
+	    TS.textarea_el.value = textdata
+		.replace(/\],\[/g,"],\n[") // ],[
+		.replace(/},{/g,"},\n{")  // },{
+	    	.replace(/\[\[/g,"[\n[") // [[
+	    	.replace(/\]\]/g,"]\n]") // ]]
+	    	.replace(/{\[/g,"{\n[")  // {[
+	    	.replace(/\]}/g,"]\n}")  // ]}
+	    	.replace(/,\"data/g,',\n"data')
+	    	.replace(/,\"hei/g,',\n"hei');
 
 	    
 	};
