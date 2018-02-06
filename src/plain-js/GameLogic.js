@@ -148,36 +148,29 @@ const GameLogic = {
 	    
 	    // case 3: player has moved into an Alien Player dies
 	    const isIntoAlien = intoCell && (intoCell.type === "D");
-	    
-	    // case 4: nudge is a rock into an alien, AND at the other side is a Boulder OR Alien (i.e. non-empty)
+
+	    // All handled below:
+	    // case 4: nudge is a rock into an alien, AND at the alien's other side is Boulder OR obstruction (not an Alien)
+	    // (that is the alien squish condition)
+	    // case 5: nudge is into an empty space
+	    // case 6: nudge is into a boulder
 	    const Coords2 = getNext(Coords);
 	    const subsequentCell = outside(Coords2) || latestState.board.cells[Coords2.y][Coords2.x];
 	    const isAlienSquish = isIntoAlien && subsequentCell && (subsequentCell.type !== "D");
-	    if(isAlienSquish){
 
+	    /* this condition here (incorporating the recursion as 'last resort') as answers the question for
+	       the caller: "does the motion actually take place (potentially some way 'downstream'...) */
+	    if(isAlienSquish || !intoCell || nudgeInto(Coords2, intoCell)){
 
-		// kill that alien
-		const alienIndex = _.findIndex(latestState.aliens, {key: intoCell.key});
-
-		latestState = update(latestState, {
-		    aliens: {$splice: [[alienIndex, 1]]},
-		    player: {score: {$apply: x => {return x+5;}}}
-		});
+		if(isAlienSquish){
+		    // kill that alien
+		    const alienIndex = _.findIndex(latestState.aliens, {key: intoCell.key});
+		    latestState = update(latestState, {
+			aliens: {$splice: [[alienIndex, 1]]},
+			player: {score: {$apply: x => {return x+5;}}}
+		    });
+		}
 		
-		// these lines are a copy of below. Gain conciseness (aka generalisation) but putting the condition
-		// of the containing if statement within the || || set below.
-		setBoardCell(Coords, nudger, true);
-		
-		return true;
-
-	    }
-	    
-	    // cases 5 & 6: where nudge is into an empty space (5) or a boulder (6)
-
-	    /* this condition (incorporating the recursion) reads as does the motion
-	       actually take place (potentially some way 'downstream'...) */
-	    if(!intoCell || nudgeInto(Coords2, intoCell)){
-
 		setBoardCell(Coords, nudger, true);
 		return true;
 	    }
