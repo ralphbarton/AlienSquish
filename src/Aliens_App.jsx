@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import GridCell from './GridCell';
 import ScoresStrip from './ScoresStrip';
 import Modal from './Modal';
-import LevelExtact from './LevelExtact';
+//import LevelExtact from './LevelExtact';
 
 import GameLogic from './plain-js/GameLogic';
 
@@ -23,11 +23,7 @@ class Aliens_App extends Component {
 	const aliens = GameLogic.genAliens(20, 15, player, 6);
 	
 	this.state = {
-	    board: {
-		width: 20,
-		height: 15,
-		cells: GameLogic.newBoard(20, 15, player, 3, 0.2, 0.05)
-	    },
+	    board: GameLogic.newBoard( "RANDOM", 0),
 	    player, // defined above...
 	    aliens,
 	    level: 1,
@@ -115,9 +111,9 @@ class Aliens_App extends Component {
 
 
 		{/* 5. Used for Level data generation (not part of the actual game) */}
-
+	    {/*
 		<LevelExtact/>
-
+	      */}
 
 	    </div>
 	);

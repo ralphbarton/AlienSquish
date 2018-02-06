@@ -1,4 +1,7 @@
 import update from 'immutability-helper';
+
+import leveldata from './leveldata';
+
 var _ = require('lodash');
 
 const GameLogic = {
@@ -17,8 +20,19 @@ const GameLogic = {
 	});
     },
 
+    newBoard: function(boardType, player, aliens, dens_Boulder, dens_Obstruc){
+	if(boardType === "RANDOM"){
+	    return {
+		width: 20,
+		height: 15,
+		cells: this.newRandomCells(20, 15, player, aliens, 0.2, 0.05)
+	    };
+	}else{
+
+	}
+    },
     
-    newBoard: function(W, H, player, aliens, dens_Boulder, dens_Obstruc){
+    newRandomCells: function(W, H, player, aliens, dens_Boulder, dens_Obstruc){
 
 	var uniqueKey = 0;
 	

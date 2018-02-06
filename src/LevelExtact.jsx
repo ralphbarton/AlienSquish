@@ -109,12 +109,20 @@ class LevelExtact extends React.PureComponent {
 	    TS.textarea_el.value = textdata
 		.replace(/\],\[/g,"],\n[") // ],[
 		.replace(/},{/g,"},\n{")  // },{
+	    	.replace(/\"height\":/g,"height: ")  // "height":
+	    	.replace(/\"width\":/g, "width: " )  // "width":
+	    	.replace(/\"data\":/g,  "data: "  )  // "data":
 	    	.replace(/\[\[/g,"[\n[") // [[
 	    	.replace(/\]\]/g,"]\n]") // ]]
+
 	    	.replace(/{\[/g,"{\n[")  // {[
 	    	.replace(/\]}/g,"]\n}")  // ]}
-	    	.replace(/,\"data/g,',\n"data')
-	    	.replace(/,\"hei/g,',\n"hei');
+
+	    	.replace(/\[{/g,"[\n{")  // [{
+	    	.replace(/}\]/g,"}\n]")  // }]
+
+	    	.replace(/,data/g,',\ndata')
+	    	.replace(/,hei/g,',\nhei');
 
 	    
 	};
