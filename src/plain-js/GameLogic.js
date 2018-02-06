@@ -22,12 +22,13 @@ const GameLogic = {
 
     loadState: function(op, oldState){
 
-	const player = {
+	var player = {
 	    x: 10,
 	    y: 7,
 	    lives: 5,
 	    score: 0
 	};
+
 	
 	// this was the basic way
 	if(op === "RANDOM"){
@@ -44,13 +45,21 @@ const GameLogic = {
 	    
 	}
 	// the new way...
-	else if(op === "START"){
+	else if(op === "LEVEL_LOAD"){
 
-	    var myLevel = leveldata[0];
+	    const newGame = !oldState;
+	    if(!newGame){
+		player = oldState.player;
+	    }
+	    if(!newGame && oldState.level >= leveldata.length){
+		return null
+	    }
+	    var myLevel = leveldata[newGame ? 0 : (oldState.level)];
 	    const longArr = [];
 	    var uniqueKey = 0;
 	    var aliens = [];
-	    
+
+	    // 1. extract the Level layout
 	    for (var j=0; j < myLevel.height; j++){
 		for (var i=0; i < myLevel.width; i++){
 
@@ -85,6 +94,7 @@ const GameLogic = {
 		}
 	    }
 
+	    // 2 return the new state object
 	    return {
 		board: {
 		    width: myLevel.width,
@@ -93,8 +103,8 @@ const GameLogic = {
 		},
 		player, // defined above...
 		aliens,
-		level: 1,
-		mode: "START"
+		level: newGame ? 1 : (oldState.level+1), //this evaluates to 1 greater than the leveldata item loaded
+		mode: newGame ? "START" : "PLAY"
 	    }
 	}
 	// this is advancing to a new level..

@@ -14,7 +14,7 @@ class Aliens_App extends Component {
 	super();
 	
 	//	this.state = GameLogic.loadState("RANDOM");
-	this.state = GameLogic.loadState("START");
+	this.state = GameLogic.loadState("LEVEL_LOAD");
 	
 	this.handleKeyDown     = this.handleKeyDown.bind(this);
 	

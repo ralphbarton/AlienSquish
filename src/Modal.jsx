@@ -1,5 +1,6 @@
 import React from 'react';
 
+import GameLogic from './plain-js/GameLogic';
 
 function Modal(props) {
 
@@ -43,9 +44,34 @@ function Modal(props) {
 		    You advance to the next level!
 		  </div>
 		  <div className="action" onClick={ ()=>{
-		    props.setState({mode: "PLAY"});
+
+			//load the next level
+			const nextLevelState = GameLogic.loadState("LEVEL_LOAD", props.state);
+			if(nextLevelState){
+			    props.setState(nextLevelState);
+			}else{
+			    props.setState({
+				mode: "END_OF_LEVELS"
+			    });
+			}
 		    }}>
 		    GO!
+		  </div>
+		</div>
+	    );
+	}
+
+	if(props.state.mode === "END_OF_LEVELS"){
+	    return (
+		<div>
+		  <h2>
+		    Game Completed!
+		  </h2>
+		  <div>
+		    You have played all the levels written so far!
+		  </div>
+		  <div>
+		    Reload the webpage to play again...
 		  </div>
 		</div>
 	    );
