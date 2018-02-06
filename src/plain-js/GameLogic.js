@@ -20,6 +20,89 @@ const GameLogic = {
 	});
     },
 
+    loadState: function(op, oldState){
+
+	const player = {
+	    x: 10,
+	    y: 7,
+	    lives: 5,
+	    score: 0
+	};
+	
+	// this was the basic way
+	if(op === "RANDOM"){
+
+	    const aliens = GameLogic.genAliens(20, 15, player, 6);
+	    return {
+		board: this.newBoard( "RANDOM", 0),
+		player, // defined above...
+		aliens,
+		level: "none",
+		mode: "START"
+	    }
+
+	    
+	}
+	// the new way...
+	else if(op === "START"){
+
+	    var myLevel = leveldata[0];
+	    const longArr = [];
+	    var uniqueKey = 0;
+	    var aliens = [];
+	    
+	    for (var j=0; j < myLevel.height; j++){
+		for (var i=0; i < myLevel.width; i++){
+
+		    const type = myLevel.data[j][i];
+		    const isBoulder = type === "C";
+		    const isObstruc = type === "B";
+
+		    if(isBoulder || isObstruc){
+			longArr.push({
+			    type: isBoulder ? "C" : "B",
+			    key: uniqueKey++
+			});
+		    }else{
+			longArr.push(null);
+		    }
+		    
+		    // A: Player cell
+		    if(type === "A"){
+			player.x = i;
+			player.y = j;
+		    }
+		    // D: Alien cell
+		    else if(type === "D"){
+			aliens.push({
+			    x: i,
+			    y: j,
+			    key: uniqueKey++,
+			    speed: Math.random()
+			});
+		    }
+		    
+		}
+	    }
+
+	    return {
+		board: {
+		    width: myLevel.width,
+		    height: myLevel.height,
+		    cells: _.chunk(longArr, myLevel.width)
+		},
+		player, // defined above...
+		aliens,
+		level: 1,
+		mode: "START"
+	    }
+	}
+	// this is advancing to a new level..
+	else{
+
+	}
+    },
+    
     newBoard: function(boardType, player, aliens, dens_Boulder, dens_Obstruc){
 	if(boardType === "RANDOM"){
 	    return {

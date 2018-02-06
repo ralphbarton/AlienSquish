@@ -12,24 +12,10 @@ class Aliens_App extends Component {
 
     constructor(){
 	super();
-
-	const player = {
-	    x: 10,
-	    y: 7,
-	    lives: 5,
-	    score: 0
-	};
-
-	const aliens = GameLogic.genAliens(20, 15, player, 6);
 	
-	this.state = {
-	    board: GameLogic.newBoard( "RANDOM", 0),
-	    player, // defined above...
-	    aliens,
-	    level: 1,
-	    mode: "START"
-	};
-
+	//	this.state = GameLogic.loadState("RANDOM");
+	this.state = GameLogic.loadState("START");
+	
 	this.handleKeyDown     = this.handleKeyDown.bind(this);
 	
     }

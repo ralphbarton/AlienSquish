@@ -77,7 +77,7 @@ class LevelExtact extends React.PureComponent {
 
 	    const result = [];
 	    //cumulative position pointer
-	    var XX = 0;
+	    var XX = 1;
 	    var YY = 0;
 	    
 	    bitmapColumns.forEach( col => {
