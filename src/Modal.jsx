@@ -77,6 +77,26 @@ function Modal(props) {
 	    );
 	}
 
+	if(props.state.mode === "LIFE_LOST"){
+	    return (
+		<div>
+		  <h2>
+		    An Alien got you!
+		  </h2>
+		  <div>
+		    You lose a life. You have {props.state.player.lives} lives remaining.
+		  </div>
+		  <div className="action" onClick={ ()=>{
+			props.setState({
+			    mode: "PLAY"
+			});
+		    }}>
+		    Continue...
+		  </div>
+		</div>
+	    );
+	}
+
 	return null;
     };
     

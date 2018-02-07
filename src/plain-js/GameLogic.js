@@ -120,7 +120,7 @@ const GameLogic = {
 		    const alienIndex = _.findIndex(latestState.aliens, {key: intoCell.key});
 		    latestState = update(latestState, {
 			aliens: {$splice: [[alienIndex, 1]]},
-			player: {score: {$apply: x => {return x+5;}}}
+			player: {score: {$apply: x => {return x+5;}}}// 5 points per kill
 		    });
 		}
 		
@@ -158,6 +158,62 @@ const GameLogic = {
 	    // those boulders aren't moving!
 	    return state;
 	}
+	
+    },
+
+    aliensMove: function(state){
+
+	const Xmax = state.board.width -1;
+	const Ymax = state.board.height -1;
+
+	var latestState = state; // we need to cumulate the changes because multiple aliens may move
+	
+	state.aliens.forEach( (ALI, alienIndex) => {
+
+	    const willMove = ALI.speed > Math.random()*1.2;
+	    if(!willMove){return;}
+	    for(var z = 0; z < 1000; z++){ // I would use while(1) except when the alien is cornered it cannot move
+		const dx = _.random(-1, 1);
+		const dy = _.random(-1, 1);
+		if( dx===0 && dy===0 ){continue;}//movement must occur
+		const newX = ALI.x + dx;
+		const newY = ALI.y + dy;
+		// must be within bounds (test here to prevent reference errors)
+		if( newX < 0 || newX > Xmax ){continue;}
+		if( newY < 0 || newY > Ymax ){continue;}
+
+		// it moved into PLAYER?
+		if(newX === state.player.x && newY === state.player.y){
+
+		    console.log("before loss registered, lives = ", latestState.player.lives);
+		    latestState = update(latestState, {
+			aliens: {
+			    [alienIndex]: {
+				x: {$set: newX},
+				y: {$set: newY}
+			    }
+			},
+			player: {lives: {$apply: x => {return x-1;}}},
+			mode: {$set: "LIFE_LOST"}
+		    });
+		}
+		
+		// must otherwise be into empty space
+		if(state.board.cells[newY][newX] !== null){continue;}
+
+		latestState = update(latestState, {
+		    aliens: {
+			[alienIndex]: {
+			    x: {$set: newX},
+			    y: {$set: newY}
+			}
+		    }
+		});
+	    }
+	});
+
+	// contains all alien-movement changes...
+	return latestState;
 	
     }
     

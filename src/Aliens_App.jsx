@@ -18,12 +18,14 @@ class Aliens_App extends Component {
 	this.state = GameInitialise.loadState("LEVEL_LOAD");
 	
 	this.handleKeyDown     = this.handleKeyDown.bind(this);
+	this.aliensTick        = this.aliensTick.bind(this);
 	
     }
 
 
     componentDidMount(){
 	document.addEventListener("keydown",   this.handleKeyDown);
+	setInterval(this.aliensTick, 100);
     }
 
     componentWillUnmount() {
@@ -54,7 +56,9 @@ class Aliens_App extends Component {
     }
 
     aliensTick(){
-
+	if(this.state.mode !== "PLAY"){return;}
+	const newState = GameLogic.aliensMove(this.state);
+	this.setState(newState);
     }
 
     render() {

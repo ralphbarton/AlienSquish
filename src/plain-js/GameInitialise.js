@@ -1,5 +1,3 @@
-import update from 'immutability-helper';
-
 import leveldata from './leveldata';
 
 var _ = require('lodash');
@@ -69,7 +67,7 @@ const GameInitialise = {
 	var player = {
 	    x: 10,
 	    y: 7,
-	    lives: 5,
+	    lives: 3,
 	    score: 0
 	};
 
