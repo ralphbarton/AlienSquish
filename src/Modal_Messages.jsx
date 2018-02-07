@@ -1,8 +1,7 @@
-
-
 import React from 'react'; // note: 'React' must be in scope when using JSX
 
 import GameInitialise from './plain-js/GameInitialise';
+import GameLogic from './plain-js/GameLogic';
 
 const Modal_Messages = [
     {   // 1. Welcome player to the Game
@@ -82,7 +81,8 @@ const Modal_Messages = [
 	id: "LIFE_LOST",
 	action: (props)=>{
 	    if(props.state.player.lives >= 0){
-		props.setState({mode: "PLAY"});
+		GameLogic.resumeAfterLifeLost(props.state, props.setState);
+
 	    }else{
 		const freshState = GameInitialise.loadState("LEVEL_LOAD");
 		//don't show the welcome message (really, should be controlled in GameInitialise.loadState)

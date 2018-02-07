@@ -68,7 +68,8 @@ const GameInitialise = {
 	    x: 10,
 	    y: 7,
 	    lives: 3,
-	    score: 0
+	    score: 0,
+	    invincible: false
 	};
 
 	

@@ -21,9 +21,15 @@ class Aliens_App extends Component {
 	
 	this.handleKeyDown     = this.handleKeyDown.bind(this);
 	this.aliensTick        = this.aliensTick.bind(this);
-	
+
+	//A massive anti-pattern
+	window.getLatestState  = this.getLatestState.bind(this);
     }
 
+
+    getLatestState(){
+	return this.state;
+    }
 
     componentDidMount(){
 	document.addEventListener("keydown",   this.handleKeyDown);

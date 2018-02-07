@@ -5,6 +5,8 @@ import ImageB   from './asset/blk-B-a.png';
 import ImageC   from './asset/blk-C-a.png';
 import ImageD   from './asset/blk-D-a.png';
 
+var _ = require('lodash');
+
 const dim = 40;
 
 function selImg(str) {
@@ -17,14 +19,25 @@ function selImg(str) {
 
 function GridCell(props) {
 
+    const cellStyle = {
+	left: props.x*dim,
+	top: props.y*dim
+    };
+
+    if(props.type === "A" && props.invincible){
+	cellStyle.opacity = 0.3;	
+    }
+
+
+    if(props.type === "D"){
+	cellStyle.filter = `hue-rotate(${_.round(60*(0.5-props.speed))}deg)`;
+    }
+    
     return (
 	<img className="GridCell"
 	     src={selImg(props.type)} 
 	     alt=""
-	     style={{
-		 left: props.x*dim,
-		 top: props.y*dim
-	     }}
+	     style={cellStyle}
 	     />
     );
 

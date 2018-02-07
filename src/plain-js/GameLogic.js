@@ -115,10 +115,12 @@ const GameLogic = {
 	    // case 3: player has moved into an Alien Player dies
 	    const isIntoAlien = intoCell && (intoCell.type === "D");
 	    if( isIntoAlien && nudger === null){ //nudger null when its the player...
-		latestState = update(latestState, {
-		    player: {lives: {$apply: x => {return x-1;}}},
-		    mode: {$set: "LIFE_LOST"}
-		});
+		if(!latestState.player.invincible){
+		    latestState = update(latestState, {
+			player: {lives: {$apply: x => {return x-1;}}},
+			mode: {$set: "LIFE_LOST"}
+		    });
+		}
 		return false; //don't register movement. No need to move the player into the alien
 	    }
 	    
@@ -196,8 +198,8 @@ const GameLogic = {
 		if( newY < 0 || newY > Ymax ){continue;}
 
 		// it moved into PLAYER?
-		if(newX === state.player.x && newY === state.player.y){
-
+		if(newX === state.player.x && newY === state.player.y && (!latestState.player.invincible)){
+		    
 		    latestState = update(latestState, {
 			aliens: {
 			    [alienIndex]: {
@@ -229,6 +231,27 @@ const GameLogic = {
 	// contains all alien-movement changes...
 	return latestState;
 	
+    },
+
+    // different paradigm in this function, which is actually passed a 'setState()' callback.
+    // it's an exception to the pattern, but makes sense because the function must set a timeout.
+    resumeAfterLifeLost: function(state, setState){
+
+	setState(
+	    update(state, {
+		mode: {$set: "PLAY"},
+		player: {invincible: {$set: true}}
+	    })
+	);
+
+	setTimeout(function(){
+	    setState(
+		update(window.getLatestState(), {
+		    player: {invincible: {$set: false}}
+		})
+	    );
+	}, 2000);
+
     }
     
 };
