@@ -6,7 +6,7 @@ function ScoresStrip(props) {
 
     const stats = [
 	["Level:", props.state.level],
-	["Remaining Aliens:", props.state.aliens.length],
+	["Aliens:", props.state.aliens.length],
 	["Lives:", props.state.player.lives],
 	["Score:", props.state.player.score],
     ];

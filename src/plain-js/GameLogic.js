@@ -73,7 +73,20 @@ const GameLogic = {
 	// add the aliens into the board
 	state.aliens.forEach( (ALI, i)=>{
 	    setBoardCell(ALI, {type: "D", key: ALI.key});
-	});	
+	});
+
+	function derasterAliensFromBoardCells(){
+	    // Clear all aliens that were placed on the board for the calculations, prior to returning board as state
+	    latestState = update(latestState, {
+		board: {
+		    cells: {
+			$set: latestState.board.cells.map( (row, y) => {
+			    return row.map( (cell, x) => {return (cell && cell.type) === "D" ? null : cell;})
+			})
+		    }
+		}
+	    });
+	};
 	
 	
 	function getNext(Coords){
@@ -101,7 +114,14 @@ const GameLogic = {
 	    
 	    // case 3: player has moved into an Alien Player dies
 	    const isIntoAlien = intoCell && (intoCell.type === "D");
-
+	    if( isIntoAlien && nudger === null){ //nudger null when its the player...
+		latestState = update(latestState, {
+		    player: {lives: {$apply: x => {return x-1;}}},
+		    mode: {$set: "LIFE_LOST"}
+		});
+		return false; //don't register movement. No need to move the player into the alien
+	    }
+	    
 	    // All handled below:
 	    // case 4: nudge is a rock into an alien, AND at the alien's other side is Boulder OR obstruction (not an Alien)
 	    // (that is the alien squish condition)
@@ -133,18 +153,9 @@ const GameLogic = {
 	const playerNextCoords = getNext(state.player);
 
 	if(nudgeInto(playerNextCoords, null)){
-	    //movement occurred. Let player move
 
-	    // Clear all aliens that were placed on the board for the calculations, prior to returning board as state
-	    latestState = update(latestState, {
-		board: {
-		    cells: {
-			$set: latestState.board.cells.map( (row, y) => {
-			    return row.map( (cell, x) => {return (cell && cell.type) === "D" ? null : cell;})
-			})
-		    }
-		}
-	    });
+	    //movement occurred. Let player move
+	    derasterAliensFromBoardCells()
 	    
 	    if(latestState.aliens.length === 0){
 		latestState = update(latestState, {mode: {$set: "COMPLETE"}});
@@ -156,7 +167,9 @@ const GameLogic = {
 	    return update(latestState, {player: {$set: playerNext}});
 	}else{
 	    // those boulders aren't moving!
-	    return state;
+	    // however player life-loss might be captured in latest State
+	    derasterAliensFromBoardCells();
+	    return latestState;
 	}
 	
     },
@@ -170,7 +183,7 @@ const GameLogic = {
 	
 	state.aliens.forEach( (ALI, alienIndex) => {
 
-	    const willMove = ALI.speed > Math.random()*1.2;
+	    const willMove = ALI.speed > Math.random()*3;
 	    if(!willMove){return;}
 	    for(var z = 0; z < 1000; z++){ // I would use while(1) except when the alien is cornered it cannot move
 		const dx = _.random(-1, 1);
@@ -185,7 +198,6 @@ const GameLogic = {
 		// it moved into PLAYER?
 		if(newX === state.player.x && newY === state.player.y){
 
-		    console.log("before loss registered, lives = ", latestState.player.lives);
 		    latestState = update(latestState, {
 			aliens: {
 			    [alienIndex]: {
@@ -196,6 +208,7 @@ const GameLogic = {
 			player: {lives: {$apply: x => {return x-1;}}},
 			mode: {$set: "LIFE_LOST"}
 		    });
+		    break;
 		}
 		
 		// must otherwise be into empty space
@@ -209,6 +222,7 @@ const GameLogic = {
 			}
 		    }
 		});
+		break;
 	    }
 	});
 
