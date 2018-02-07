@@ -1,6 +1,6 @@
 import React from 'react';
 
-import GameLogic from './plain-js/GameLogic';
+import GameInitialise from './plain-js/GameInitialise';
 
 function Modal(props) {
 
@@ -46,7 +46,7 @@ function Modal(props) {
 		  <div className="action" onClick={ ()=>{
 
 			//load the next level
-			const nextLevelState = GameLogic.loadState("LEVEL_LOAD", props.state);
+			const nextLevelState = GameInitialise.loadState("LEVEL_LOAD", props.state);
 			if(nextLevelState){
 			    props.setState(nextLevelState);
 			}else{

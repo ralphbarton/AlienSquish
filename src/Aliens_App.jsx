@@ -6,6 +6,7 @@ import Modal from './Modal';
 //import LevelExtact from './LevelExtact';
 
 import GameLogic from './plain-js/GameLogic';
+import GameInitialise from './plain-js/GameInitialise';
 
 
 class Aliens_App extends Component {
@@ -13,8 +14,8 @@ class Aliens_App extends Component {
     constructor(){
 	super();
 	
-	//	this.state = GameLogic.loadState("RANDOM");
-	this.state = GameLogic.loadState("LEVEL_LOAD");
+	//	this.state = GameInitialise.loadState("RANDOM");
+	this.state = GameInitialise.loadState("LEVEL_LOAD");
 	
 	this.handleKeyDown     = this.handleKeyDown.bind(this);
 	
@@ -51,7 +52,10 @@ class Aliens_App extends Component {
 	this.setState(newState);
 
     }
-    
+
+    aliensTick(){
+
+    }
 
     render() {
 
