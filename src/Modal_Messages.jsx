@@ -80,19 +80,45 @@ const Modal_Messages = [
     },
     {   //4. Lost a Life
 	id: "LIFE_LOST",
-	action: (props)=>{props.setState({mode: "PLAY"});},
-	actionText: "Resume",
+	action: (props)=>{
+	    if(props.state.player.lives >= 0){
+		props.setState({mode: "PLAY"});
+	    }else{
+		const freshState = GameInitialise.loadState("LEVEL_LOAD");
+		//don't show the welcome message (really, should be controlled in GameInitialise.loadState)
+		freshState.mode = "PLAY"; 
+		props.setState(freshState);
+	    }
+	},
+	actionText: "Continue",
 	jsx: (props)=>{
-	    return (
-		<div>
-		  <h2>
-		    An Alien got you!
-		  </h2>
-		  <div>
-		    You lose a life. You have {props.state.player.lives} lives remaining.
-		  </div>
-		</div>
-	    );
+	    if(props.state.player.lives >= 0){
+		return (
+		    <div>
+		      <h2>
+			An Alien got you!
+		      </h2>
+		      <div>
+			You lose a life. You have {props.state.player.lives} lives remaining.
+		      </div>
+		    </div>
+		);
+	    }
+	    else{
+		return (
+		    <div>
+		      <h1>
+			Game Over!
+		      </h1>
+		      <div>
+			You lost all of your lives.
+		      </div>
+		      <div>
+			Play again?
+		      </div>
+		    </div>
+		);
+	    }
 	}
     },
     {
