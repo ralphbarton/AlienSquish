@@ -3,11 +3,13 @@ import React, { Component } from 'react';
 import GridCell from './GridCell';
 import ScoresStrip from './ScoresStrip';
 import Modal from './Modal';
+import Modal_Messages from './Modal_Messages';
 //import LevelExtact from './LevelExtact';
 
 import GameLogic from './plain-js/GameLogic';
 import GameInitialise from './plain-js/GameInitialise';
 
+var _ = require('lodash');
 
 class Aliens_App extends Component {
 
@@ -35,9 +37,18 @@ class Aliens_App extends Component {
 
     handleKeyDown(e){
 
+	if(this.state.mode !== "PLAY"){
+	    if(e.keyCode === 13){
+		const currentModalMsg = _.find(Modal_Messages, {id: this.state.mode});
+		currentModalMsg.action({
+		    state: this.state,
+		    setState: this.setState.bind(this)
+		});
+	    }
+	    return;
+	}
+
 	// extract direction 'd' and value 'v' from keystoke
-	if(this.state.mode !== "PLAY"){return;}
-	
 	const ArrowKey = (()=>{
 	    if(e.keyCode === 39) {return {d: "x", v: +1};} 	    // rightPressed
 	    if(e.keyCode === 37) {return {d: "x", v: -1};} 	    // leftPressed

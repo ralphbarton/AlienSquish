@@ -115,7 +115,7 @@ div.ScoresStrip > div > div:last-child{
     border: 7px double rgba(255,0,0,0.7);
 }
 
-.Modal > div > div{
+.Modal > div > div > div{ 
     margin: 1em 0;
     font-size: 120%;
 }
